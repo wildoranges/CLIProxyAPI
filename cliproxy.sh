@@ -10,6 +10,20 @@ LOG_DIR="$BASE_DIR/logs"
 LOG_FILE="$LOG_DIR/cliproxyapi.log"
 PID_FILE="$BASE_DIR/cliproxyapi.pid"
 
+usage() {
+    cat <<EOF
+Usage: $0 {start|stop|restart|status|logs|help}
+
+Commands:
+  start       Start CLIProxyAPI (default)
+  stop        Stop CLIProxyAPI
+  restart     Restart CLIProxyAPI
+  status      Show whether CLIProxyAPI is running
+  logs        Follow the log, starting with the last 100 lines
+  help        Show this help (-h, --help)
+EOF
+}
+
 start() {
     if [[ -f "$PID_FILE" ]]; then
         pid=$(cat "$PID_FILE")
@@ -88,8 +102,11 @@ case "${1:-start}" in
         touch "$LOG_FILE"
         tail -n 100 -f "$LOG_FILE"
         ;;
+    help|-h|--help)
+        usage
+        ;;
     *)
-        echo "Usage: $0 {start|stop|restart|status|logs}"
+        usage >&2
         exit 1
         ;;
 esac
